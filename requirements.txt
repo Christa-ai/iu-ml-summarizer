@@ -1,5 +1,6 @@
 # Web / Dashboard
 dash>=2.17
+dash-bootstrap-components>=2.0
 
 # NLP / ML
 transformers>=4.40
@@ -10,6 +11,9 @@ datasets>=2.19
 pandas>=2.2
 scikit-learn>=1.5
 numpy>=2.0
+
+# Evaluation
+rouge_score>=0.1.2
 
 # Utilities
 scipy>=1.14
