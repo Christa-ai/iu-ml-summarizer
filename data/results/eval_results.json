@@ -1,0 +1,316 @@
+{
+  "summary": {
+    "model": "facebook/bart-large-cnn",
+    "dataset": "cnn_dailymail 3.0.0",
+    "num_samples": 50,
+    "batch_size": 8,
+    "total_time_s": 177.9,
+    "avg_inference_s": 3.557,
+    "avg_rouge1": 0.3667,
+    "avg_rouge2": 0.1724,
+    "avg_rougeL": 0.2873,
+    "timestamp": "2026-06-10T08:57:12"
+  },
+  "per_article": [
+    {
+      "rouge1": 0.5352,
+      "rouge2": 0.3768,
+      "rougeL": 0.4789,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.45,
+      "rouge2": 0.2051,
+      "rougeL": 0.4,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.4828,
+      "rouge2": 0.25,
+      "rougeL": 0.3103,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.4,
+      "rouge2": 0.1765,
+      "rougeL": 0.3429,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.6479,
+      "rouge2": 0.4638,
+      "rougeL": 0.3662,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.56,
+      "rouge2": 0.2917,
+      "rougeL": 0.52,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.5253,
+      "rouge2": 0.268,
+      "rougeL": 0.3232,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.1918,
+      "rouge2": 0.0563,
+      "rougeL": 0.1096,
+      "inference_s": 3.503
+    },
+    {
+      "rouge1": 0.4615,
+      "rouge2": 0.1587,
+      "rougeL": 0.3077,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.5217,
+      "rouge2": 0.3636,
+      "rougeL": 0.5217,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.4286,
+      "rouge2": 0.2222,
+      "rougeL": 0.3929,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.4074,
+      "rouge2": 0.1154,
+      "rougeL": 0.2593,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.3014,
+      "rouge2": 0.1408,
+      "rougeL": 0.274,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.1818,
+      "rouge2": 0.0267,
+      "rougeL": 0.1039,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.1639,
+      "rouge2": 0.1017,
+      "rougeL": 0.0984,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.275,
+      "rouge2": 0.1026,
+      "rougeL": 0.2,
+      "inference_s": 3.545
+    },
+    {
+      "rouge1": 0.4638,
+      "rouge2": 0.2985,
+      "rougeL": 0.4348,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.4045,
+      "rouge2": 0.1149,
+      "rougeL": 0.2697,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.3939,
+      "rouge2": 0.1875,
+      "rougeL": 0.3636,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.2909,
+      "rouge2": 0.1132,
+      "rougeL": 0.1818,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.2254,
+      "rouge2": 0.058,
+      "rougeL": 0.169,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.2393,
+      "rouge2": 0.0522,
+      "rougeL": 0.1538,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.3333,
+      "rouge2": 0.0313,
+      "rougeL": 0.1515,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.6667,
+      "rouge2": 0.4138,
+      "rougeL": 0.5,
+      "inference_s": 4.388
+    },
+    {
+      "rouge1": 0.4478,
+      "rouge2": 0.1846,
+      "rougeL": 0.3284,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.2826,
+      "rouge2": 0.0444,
+      "rougeL": 0.2174,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.2807,
+      "rouge2": 0.1455,
+      "rougeL": 0.2105,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.2308,
+      "rouge2": 0.08,
+      "rougeL": 0.1538,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.3019,
+      "rouge2": 0.0784,
+      "rougeL": 0.2642,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.381,
+      "rouge2": 0.2951,
+      "rougeL": 0.3492,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.3095,
+      "rouge2": 0.0488,
+      "rougeL": 0.2143,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.1667,
+      "rouge2": 0.0213,
+      "rougeL": 0.1042,
+      "inference_s": 3.921
+    },
+    {
+      "rouge1": 0.3333,
+      "rouge2": 0.1739,
+      "rougeL": 0.2917,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.2745,
+      "rouge2": 0.0816,
+      "rougeL": 0.1569,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.3871,
+      "rouge2": 0.1,
+      "rougeL": 0.3226,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.3333,
+      "rouge2": 0.1143,
+      "rougeL": 0.25,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.4048,
+      "rouge2": 0.1951,
+      "rougeL": 0.3333,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.3488,
+      "rouge2": 0.0952,
+      "rougeL": 0.186,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.2424,
+      "rouge2": 0.0312,
+      "rougeL": 0.2121,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.1639,
+      "rouge2": 0.0,
+      "rougeL": 0.1639,
+      "inference_s": 3.477
+    },
+    {
+      "rouge1": 0.3333,
+      "rouge2": 0.1154,
+      "rougeL": 0.2593,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.075,
+      "rouge2": 0.0,
+      "rougeL": 0.05,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.7059,
+      "rouge2": 0.6122,
+      "rougeL": 0.7059,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.5246,
+      "rouge2": 0.3729,
+      "rougeL": 0.459,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.3846,
+      "rouge2": 0.08,
+      "rougeL": 0.1538,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.1967,
+      "rouge2": 0.0339,
+      "rougeL": 0.1311,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.9434,
+      "rouge2": 0.8627,
+      "rougeL": 0.9434,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.2,
+      "rouge2": 0.0588,
+      "rougeL": 0.1714,
+      "inference_s": 2.967
+    },
+    {
+      "rouge1": 0.2258,
+      "rouge2": 0.0667,
+      "rougeL": 0.1935,
+      "inference_s": 1.711
+    },
+    {
+      "rouge1": 0.3043,
+      "rouge2": 0.1364,
+      "rougeL": 0.3043,
+      "inference_s": 1.711
+    }
+  ]
+}

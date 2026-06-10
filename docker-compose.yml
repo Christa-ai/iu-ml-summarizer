@@ -1,0 +1,32 @@
+services:
+
+  # ── Dash / Gunicorn application ──────────────────────────────────────────────
+  app:
+    build: .
+    container_name: summarizer-app
+    expose:
+      - "8050"
+    volumes:
+      # Persist logs and evaluation results outside the container
+      - ./data/logs:/app/data/logs
+      - ./data/results:/app/data/results
+    environment:
+      # Prevent the app from trying to reach Hugging Face at runtime
+      - HF_HUB_OFFLINE=1
+      - HF_DATASETS_OFFLINE=1
+    restart: unless-stopped
+
+  # ── Nginx reverse proxy ──────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: summarizer-proxy
+    ports:
+      - "80:80"    # redirects to HTTPS
+      - "443:443"  # HTTPS
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Self-signed TLS certificate (generate once with docker/generate-cert.sh)
+      - ./docker/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+    restart: unless-stopped

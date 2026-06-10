@@ -41,3 +41,25 @@ Thumbs.db
 *.h5
 *.pt
 mlruns/
+
+# Application logs and JSONL request history (runtime artefacts)
+data/logs/
+
+# TLS certificates (generated locally, never committed)
+docker/certs/
+
+# Temporary / scratch files
+app_stdout.txt
+app_stderr.txt
+import_test.txt
+test2.txt
+test_eval.txt
+~WRL*.tmp
+
+# Office temp files
+~$*
+
+# Hugging Face model cache (large binary files)
+.cache/
+*.bin
+*.safetensors

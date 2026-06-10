@@ -1,6 +1,8 @@
 # Web / Dashboard
 dash>=2.17
 dash-bootstrap-components>=2.0
+pypdf>=4.0
+gunicorn>=22.0
 
 # NLP / ML
 transformers>=4.40

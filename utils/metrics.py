@@ -1,3 +1,14 @@
+"""
+utils/metrics.py — Evaluation Metrics
+
+Provides ROUGE scoring utilities and a lightweight wall-clock timer used
+throughout the evaluation pipeline and the web application.
+
+    compute_rouge()  – ROUGE-1 / ROUGE-2 / ROUGE-L F1 for a single pair
+    average_rouge()  – mean ROUGE across a list of result dicts
+    Timer            – context manager for measuring inference time
+"""
+
 import time
 from rouge_score import rouge_scorer
 
