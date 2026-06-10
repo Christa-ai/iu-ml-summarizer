@@ -57,18 +57,36 @@ def summarize(
         num_beams=num_beams,
         max_length=max_len,
         min_length=min_len,
-        no_repeat_ngram_size=3,
+        no_repeat_ngram_size=3,  # prevents repetitive n-grams in the output
     )
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
 
 
 def summarize_batch(
-    texts: list,
+    texts: list[str],
     max_len: int = 130,
     min_len: int = 30,
     num_beams: int = 1,
-) -> list:
-    """Process multiple articles in a single forward pass (faster on CPU)."""
+) -> list[str]:
+    """
+    Generate abstractive summaries for a list of documents in one forward pass.
+
+    Batched inference is significantly faster than calling summarize() in a
+    loop because the tokenizer pads all inputs to the same length and the
+    model processes them in parallel on the available hardware.
+
+    Parameters
+    ----------
+    texts     : List of input documents (plain text). Each text longer than
+                1 024 tokens is automatically truncated by the tokenizer.
+    max_len   : Maximum number of tokens in each generated summary.
+    min_len   : Minimum number of tokens in each generated summary.
+    num_beams : Beam width for beam search.
+
+    Returns
+    -------
+    list[str] : Decoded summary strings in the same order as the input.
+    """
     inputs = tokenizer(
         texts,
         max_length=1024,

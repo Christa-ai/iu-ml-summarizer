@@ -63,3 +63,26 @@ test_eval.txt
 .cache/
 *.bin
 *.safetensors
+
+# Personal / course materials (local only — never push to GitHub)
+Archiv/
+*Portfolio*
+Aufgabenstellung*
+Literaturliste*
+*Prüfungsleitfaden*
+*Pruefungsleitfaden*
+Konzept*
+Notizen*
+Disease*
+GSE*.odt
+Figure_*.png
+
+# Diagrams and editor backups
+*.drawio
+*.drawio.png
+*.bkp
+.$*
+
+# Office documents (local notes)
+*.odt
+*.docx

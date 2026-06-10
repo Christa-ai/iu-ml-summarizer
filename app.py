@@ -35,7 +35,13 @@ _log = setup_logger()
 # ---------------------------------------------------------------------------
 _EVAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "results", "eval_results.json")
 
-def _load_eval():
+def _load_eval() -> dict | None:
+    """
+    Load pre-computed evaluation results from disk.
+
+    Returns the parsed JSON dict on success, or None if the file is missing
+    or malformed (non-fatal — the evaluation section is simply hidden).
+    """
     try:
         with open(_EVAL_PATH, encoding="utf-8") as f:
             return json.load(f)
@@ -45,7 +51,18 @@ def _load_eval():
 _EVAL = _load_eval()
 
 
-def _build_eval_section():
+def _build_eval_section() -> html.Div:
+    """
+    Build the evaluation results section rendered inside the collapsible panel.
+
+    Reads the pre-computed evaluation data loaded at startup (_EVAL) and
+    constructs two Plotly charts:
+      - Box plot: distribution of ROUGE-1 / ROUGE-2 / ROUGE-L across all articles
+      - Line chart: per-article ROUGE scores to visualise variance
+
+    Returns an empty html.Div when no evaluation data is available so that
+    the caller never receives None.
+    """
     if _EVAL is None:
         return html.Div()
 
@@ -55,7 +72,6 @@ def _build_eval_section():
     r1 = [a["rouge1"] for a in articles]
     r2 = [a["rouge2"] for a in articles]
     rl = [a["rougeL"] for a in articles]
-    inf = [a["inference_s"] for a in articles]
     x_idx = list(range(1, len(articles) + 1))
 
     # ── Chart 1: ROUGE box plot ──────────────────────────────────────────────
@@ -74,14 +90,15 @@ def _build_eval_section():
         title="ROUGE-Score Verteilung (50 Artikel)",
         yaxis_title="F1-Score",
         yaxis=dict(range=[0, 1]),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(t=50, b=40, l=50, r=20),
-        height=320,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
+        # Legend below the chart so it never overlaps on narrow/mobile screens
+        legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5),
+        margin=dict(t=50, b=70, l=50, r=20),
+        height=350,
+        plot_bgcolor="#f4f5f7",
+        paper_bgcolor="#f4f5f7",
     )
     box_fig.update_xaxes(showgrid=False)
-    box_fig.update_yaxes(showgrid=True, gridcolor="#f0f0f0")
+    box_fig.update_yaxes(showgrid=True, gridcolor="#dde1e7")
 
     # ── Chart 2: ROUGE scores per article (line) ─────────────────────────────
     line_fig = go.Figure()
@@ -100,23 +117,22 @@ def _build_eval_section():
         xaxis_title="Artikel-Nr.",
         yaxis_title="F1-Score",
         yaxis=dict(range=[0, 1]),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(t=50, b=40, l=50, r=20),
-        height=320,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
+        # Legend below the chart so it never overlaps on narrow/mobile screens
+        legend=dict(orientation="h", yanchor="top", y=-0.25, xanchor="center", x=0.5),
+        margin=dict(t=50, b=80, l=50, r=20),
+        height=350,
+        plot_bgcolor="#f4f5f7",
+        paper_bgcolor="#f4f5f7",
     )
-    line_fig.update_xaxes(showgrid=True, gridcolor="#f0f0f0")
-    line_fig.update_yaxes(showgrid=True, gridcolor="#f0f0f0")
+    line_fig.update_xaxes(showgrid=True, gridcolor="#dde1e7")
+    line_fig.update_yaxes(showgrid=True, gridcolor="#dde1e7")
 
     return html.Div(
         [
-            html.Hr(className="my-4"),
-            html.H4("Evaluierungsergebnisse", className="mb-1"),
             html.P(
                 f"Modell: {s['model']}  ·  Datensatz: {s['dataset']}  ·  "
                 f"Stichprobe: {s['num_samples']} Artikel  ·  Stand: {s['timestamp'][:10]}",
-                className="text-muted small mb-4",
+                className="text-muted small mb-4 mt-2",
             ),
 
             # Summary metric cards
@@ -160,8 +176,13 @@ def _build_eval_section():
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
+    # suppress_callback_exceptions is required because the "clear PDF" button
+    # and upload-feedback children are created dynamically at runtime.
     suppress_callback_exceptions=True,
 )
+
+# Expose the underlying Flask server for WSGI deployment via Gunicorn.
+server = app.server
 
 _DROPZONE = html.Div(
     [
@@ -177,34 +198,37 @@ app.layout = dbc.Container(
     [
         # ── Header ──────────────────────────────────────────────────────────
         dbc.Row(
-            dbc.Col(
-                html.Div(
-                    [
-                        html.Span(
-                            "📄",
-                            style={
-                                "fontSize": "2.5rem",
-                                "verticalAlign": "middle",
-                                "marginRight": "0.6rem",
-                            },
-                        ),
-                        html.Span(
-                            "Automatische Textzusammenfassung",
-                            style={
-                                "fontSize": "1.8rem",
-                                "fontWeight": "600",
-                                "verticalAlign": "middle",
-                            },
-                        ),
-                        html.P(
-                            "Machine Learning basierte Zusammenfassung von PDF-Dokumenten",
-                            className="text-muted mb-0",
-                            style={"marginLeft": "3.4rem"},
-                        ),
-                    ],
-                    className="mt-4 mb-4",
-                )
-            )
+            [
+                dbc.Col(
+                    html.Div(
+                        [
+                            html.Span(
+                                "Jurasummarizer",
+                                style={
+                                    "fontSize": "1.8rem",
+                                    "fontWeight": "600",
+                                    "verticalAlign": "middle",
+                                    "display": "block",
+                                },
+                            ),
+                            html.P(
+                                "Machine Learning basierte, sichere Textzusammenfassung aus PDF-Dokumenten",
+                                className="text-muted mb-0",
+                            ),
+                        ],
+                        className="mt-4 mb-4",
+                    ),
+                ),
+                dbc.Col(
+                    html.Img(
+                        src="/assets/logo.png",
+                        style={"height": "130px", "display": "block"},
+                    ),
+                    className="d-flex align-items-center justify-content-end mt-2 mb-2",
+                    width="auto",
+                ),
+            ],
+            className="align-items-center",
         ),
 
         # ── Two-column body ─────────────────────────────────────────────────
@@ -245,7 +269,7 @@ app.layout = dbc.Container(
                         dbc.Button(
                             "Zusammenfassen",
                             id="summarize-btn",
-                            color="dark",
+                            color="primary",
                             size="lg",
                             className="w-100 mb-4",
                         ),
@@ -383,6 +407,15 @@ app.layout = dbc.Container(
                             className="mb-3",
                         ),
 
+                        dbc.Button(
+                            "Evaluierungsergebnisse anzeigen",
+                            id="eval-toggle-btn",
+                            color="primary",
+                            outline=True,
+                            size="sm",
+                            className="mb-3 w-100",
+                            n_clicks=0,
+                        ),
                         dcc.Textarea(id="reference-text", style={"display": "none"}),
                     ],
                     lg=4,
@@ -390,10 +423,18 @@ app.layout = dbc.Container(
             ]
         ),
         # ── Evaluation section ───────────────────────────────────────────────
-        dbc.Row(dbc.Col(_build_eval_section())),
+        dbc.Row(dbc.Col([
+            html.Hr(className="my-4"),
+            html.Div(
+                id="eval-collapse",
+                children=_build_eval_section(),
+                style={"display": "none"},
+            ),
+        ])),
     ],
     fluid=True,
     className="px-4",
+    style={"backgroundColor": "#f4f5f7", "minHeight": "100vh"},
 )
 
 
@@ -478,17 +519,20 @@ def show_upload_feedback(contents, filename):
 
 
 @callback(Output("badge-max-len", "children"), Input("max-length", "value"))
-def update_max_badge(val):
+def update_max_badge(val: int) -> str:
+    """Reflect the current max-length slider value in the badge label."""
     return f"{val} Tokens"
 
 
 @callback(Output("badge-min-len", "children"), Input("min-length", "value"))
-def update_min_badge(val):
+def update_min_badge(val: int) -> str:
+    """Reflect the current min-length slider value in the badge label."""
     return f"{val} Tokens"
 
 
 @callback(Output("badge-beams", "children"), Input("num-beams", "value"))
-def update_beams_badge(val):
+def update_beams_badge(val: int) -> str:
+    """Reflect the current beam-size slider value in the badge label."""
     return str(val)
 
 
@@ -504,7 +548,33 @@ def update_beams_badge(val):
     State("num-beams", "value"),
     prevent_initial_call=True,
 )
-def run_summarization(n_clicks, contents, filename, reference_text, max_len, min_len, num_beams):
+def run_summarization(
+    n_clicks: int,
+    contents: str | None,
+    filename: str | None,
+    reference_text: str | None,
+    max_len: int,
+    min_len: int,
+    num_beams: int,
+) -> tuple:
+    """
+    Core summarisation callback — triggered by the "Zusammenfassen" button.
+
+    Workflow
+    --------
+    1. Validate that a PDF has been uploaded (contents != None).
+    2. Decode the base64 payload and extract plain text via pypdf.
+    3. Warn if the document exceeds the model's 1 024-token limit.
+    4. Run BART inference via model.summarizer.summarize().
+    5. Optionally compute ROUGE scores when a reference text is provided.
+    6. Persist a structured log entry to data/logs/requests.jsonl.
+
+    Returns
+    -------
+    tuple[component, component | None]
+        (summary_card, rouge_section)  – both are Dash component trees
+        ready to be injected into #output-summary and #output-rouge.
+    """
     if not contents:
         _log.warning("[validation] Zusammenfassen ohne hochgeladene PDF angeklickt.")
         return dbc.Alert("Bitte laden Sie zuerst eine PDF-Datei hoch.", color="warning"), None
@@ -532,6 +602,7 @@ def run_summarization(n_clicks, contents, filename, reference_text, max_len, min
     if truncated:
         _log.warning("[validation] '%s': Eingabe > 4000 Zeichen, wird auf 1024 Tokens gekürzt.", filename)
 
+    # Guard: BART raises an error if min_len >= max_len
     min_len = min(min_len, max_len - 1)
 
     with Timer() as t:
@@ -614,6 +685,32 @@ def run_summarization(n_clicks, contents, filename, reference_text, max_len, min
         )
 
     return summary_card, rouge_section
+
+
+@callback(
+    Output("eval-collapse", "style"),
+    Output("eval-toggle-btn", "children"),
+    Input("eval-toggle-btn", "n_clicks"),
+    State("eval-collapse", "style"),
+    prevent_initial_call=True,
+)
+def toggle_eval(_n: int, current_style: dict | None) -> tuple:
+    """
+    Toggle visibility of the evaluation results panel.
+
+    Reads the current inline style of #eval-collapse to determine whether
+    the panel is hidden, then flips its display property and updates the
+    button label accordingly.
+
+    Returns
+    -------
+    tuple[dict, str]
+        (new_style, button_label)
+    """
+    visible = current_style is None or current_style.get("display") == "none"
+    new_style = {"display": "block"} if visible else {"display": "none"}
+    label = "Evaluierungsergebnisse ausblenden" if visible else "Evaluierungsergebnisse anzeigen"
+    return new_style, label
 
 
 if __name__ == "__main__":

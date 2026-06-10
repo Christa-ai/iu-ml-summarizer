@@ -1,12 +1,22 @@
 """
-Unit tests for the summarizer and metrics modules.
-Run with: pytest tests/ -v
+Unit tests for the summarizer, metrics and PDF-reader modules.
+
+Each test is self-contained and imports its subject locally so that the
+model is only loaded when a summarizer test actually runs (lazy import).
+Run with:
+    pytest tests/ -v
 """
 
 import pytest
 
 
 def test_summarize_returns_nonempty_string():
+    """
+    Verify that summarize() returns a non-empty string for a valid text input.
+
+    This is a smoke test: it does not assert content quality, only that the
+    model produces output without raising an exception.
+    """
     from model.summarizer import summarize
 
     text = (
@@ -22,6 +32,12 @@ def test_summarize_returns_nonempty_string():
 
 
 def test_summarize_respects_max_length():
+    """
+    Verify that the generated summary does not exceed max_len tokens.
+
+    A small buffer (+2) is added to account for the BOS/EOS special tokens
+    that BART appends during tokenization of the decoded output.
+    """
     from model.summarizer import summarize
     from transformers import BartTokenizer
 
@@ -33,6 +49,10 @@ def test_summarize_respects_max_length():
 
 
 def test_compute_rouge_returns_valid_scores():
+    """
+    Verify that compute_rouge() returns ROUGE-1, ROUGE-2, and ROUGE-L F1 scores
+    in the valid range [0.0, 1.0] for a simple prediction/reference pair.
+    """
     from utils.metrics import compute_rouge
 
     prediction = "The cat sat on the mat."
@@ -45,6 +65,10 @@ def test_compute_rouge_returns_valid_scores():
 
 
 def test_average_rouge_correct():
+    """
+    Verify that average_rouge() computes the arithmetic mean for each metric
+    across a list of per-article score dicts.
+    """
     from utils.metrics import average_rouge
 
     score_list = [
@@ -58,6 +82,10 @@ def test_average_rouge_correct():
 
 
 def test_pdf_reader_invalid_input_raises():
+    """
+    Verify that extract_text_from_b64() raises an exception for malformed
+    input that cannot be decoded as a valid base64-encoded PDF.
+    """
     from utils.pdf_reader import extract_text_from_b64
 
     with pytest.raises(Exception):

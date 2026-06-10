@@ -30,6 +30,35 @@ log = logging.getLogger(__name__)
 
 
 def run_evaluation(num_samples: int, output_path: str, batch_size: int = 8) -> None:
+    """
+    Run the offline ROUGE evaluation pipeline on the CNN/DailyMail test split.
+
+    Loads the requested number of articles from the locally cached dataset,
+    generates abstractive summaries in batches using BART, computes ROUGE-1 /
+    ROUGE-2 / ROUGE-L scores for each article, and writes the aggregated
+    results to a JSON file consumed by the Dash evaluation section.
+
+    Parameters
+    ----------
+    num_samples : Number of test articles to evaluate (default: 50).
+    output_path : Destination path for the JSON output file.
+    batch_size  : Number of articles processed in one model forward pass.
+                  Larger batches use more RAM but are faster on multi-core CPUs.
+
+    Output JSON schema
+    ------------------
+    {
+      "summary": {
+        "model": str, "dataset": str, "num_samples": int,
+        "avg_rouge1": float, "avg_rouge2": float, "avg_rougeL": float,
+        "avg_inference_s": float, "total_time_s": float, "timestamp": str
+      },
+      "per_article": [
+        {"rouge1": float, "rouge2": float, "rougeL": float, "inference_s": float},
+        ...
+      ]
+    }
+    """
     log.info("Loading cnn_dailymail (split=test) ...")
     dataset = load_dataset("abisee/cnn_dailymail", "3.0.0", split="test")
 
